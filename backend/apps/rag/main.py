@@ -30,23 +30,6 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 
-from langchain.agents import create_sql_agent
-from langchain.agents.agent_toolkits import SQLDatabaseToolkit
-from langchain.agents.agent_types import AgentType
-from langchain.chat_models import ollama
-from langchain.sql_database import SQLDatabase
-from langchain.prompts.chat import ChatPromptTemplate
-from sqlalchemy import create_engine
-
-cs="mssql+pymssql://sa:Rambo1234@localhost/test"
-db_engine=create_engine(cs)
-db=SQLDatabase(db_engine)
-
-
-llm=ChatOpenAI(temperature=0.0,model="gpt-4")
-sql_toolkit=SQLDatabaseToolkit(db=db,llm=llm)
-sql_toolkit.get_tools()
-
 from pydantic import BaseModel
 from typing import Optional
 
