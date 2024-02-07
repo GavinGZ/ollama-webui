@@ -35,6 +35,14 @@ FRONTEND_BUILD_DIR = str(Path(os.getenv("FRONTEND_BUILD_DIR", "../build")))
 UPLOAD_DIR = f"{DATA_DIR}/uploads"
 Path(UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
 
+
+####################################
+# Cache DIR
+####################################
+
+CACHE_DIR = f"{DATA_DIR}/cache"
+Path(CACHE_DIR).mkdir(parents=True, exist_ok=True)
+
 ####################################
 # OLLAMA_API_BASE_URL
 ####################################
@@ -89,7 +97,7 @@ DEFAULT_PROMPT_SUGGESTIONS = os.environ.get(
 # WEBUI_VERSION
 ####################################
 
-WEBUI_VERSION = os.environ.get("WEBUI_VERSION", "v1.0.0-alpha.61")
+WEBUI_VERSION = os.environ.get("WEBUI_VERSION", "v1.0.0-alpha.92")
 
 ####################################
 # WEBUI_AUTH (Required for security)
@@ -98,12 +106,17 @@ WEBUI_VERSION = os.environ.get("WEBUI_VERSION", "v1.0.0-alpha.61")
 WEBUI_AUTH = True
 
 ####################################
-# WEBUI_JWT_SECRET_KEY
+# WEBUI_SECRET_KEY
 ####################################
 
-WEBUI_JWT_SECRET_KEY = os.environ.get("WEBUI_JWT_SECRET_KEY", "t0p-s3cr3t")
+WEBUI_SECRET_KEY = os.environ.get(
+    "WEBUI_SECRET_KEY",
+    os.environ.get(
+        "WEBUI_JWT_SECRET_KEY", "t0p-s3cr3t"
+    ),  # DEPRECATED: remove at next major version
+)
 
-if WEBUI_AUTH and WEBUI_JWT_SECRET_KEY == "":
+if WEBUI_AUTH and WEBUI_SECRET_KEY == "":
     raise ValueError(ERROR_MESSAGES.ENV_VAR_NOT_FOUND)
 
 ####################################
@@ -113,7 +126,8 @@ if WEBUI_AUTH and WEBUI_JWT_SECRET_KEY == "":
 CHROMA_DATA_PATH = f"{DATA_DIR}/vector_db"
 EMBED_MODEL = "all-MiniLM-L6-v2"
 CHROMA_CLIENT = chromadb.PersistentClient(
-    path=CHROMA_DATA_PATH, settings=Settings(allow_reset=True)
+    path=CHROMA_DATA_PATH,
+    settings=Settings(allow_reset=True, anonymized_telemetry=False),
 )
 CHUNK_SIZE = 1500
 CHUNK_OVERLAP = 100
